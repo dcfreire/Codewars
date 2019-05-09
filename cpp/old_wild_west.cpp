@@ -9,21 +9,26 @@ public:
 static std::vector<std::string> dirReduc(std::vector<std::string> &arr){
 
         for(int i = 0; i < arr.size(); i++) {
+                        if(arr.size() <=1)
+                          return arr;
                         if(!arr[i].compare("NORTH") && !arr[i + 1].compare("SOUTH")) {
                                 arr.erase(arr.begin() + i);
                                 arr.erase(arr.begin() + i);
-                                i = 0;
+                                i = -1;
+                                continue;
                         }
                         if(!arr[i].compare("EAST") && !arr[i + 1].compare("WEST")) {
                                 arr.erase(arr.begin() + i);
                                 arr.erase(arr.begin() + i);
-                                i = 0;
+                                i = -1;
+                                continue;
 
                         }
                         if(!arr[i + 1].compare("EAST") && !arr[i].compare("WEST")) {
                                 arr.erase(arr.begin() + i);
                                 arr.erase(arr.begin() + i);
-                                i = 0;
+                                i = -1;
+                                continue;
 
 
 
@@ -31,8 +36,9 @@ static std::vector<std::string> dirReduc(std::vector<std::string> &arr){
                         if(!arr[i + 1].compare("NORTH") && !arr[i].compare("SOUTH")) {
                                 arr.erase(arr.begin() + i);
                                 arr.erase(arr.begin() + i);
-                                i = 0;
+                                i = -1;
 
+                                continue;
 
                         }
 
@@ -43,5 +49,3 @@ static std::vector<std::string> dirReduc(std::vector<std::string> &arr){
 
 }
 };
-
-int main(){}
