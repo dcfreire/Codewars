@@ -1,6 +1,7 @@
 #include<stdlib.h>
 #include<string>
 #include<iostream>
+
 std::string uint32_to_ip(uint32_t ip)
 {
   int octet = 3;
@@ -12,8 +13,4 @@ std::string uint32_to_ip(uint32_t ip)
     octet--;
   }
   return ret;
-}
-
-int main(){
-  std::cout << uint32_to_ip(2149583361);
 }
