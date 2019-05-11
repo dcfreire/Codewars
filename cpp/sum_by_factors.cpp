@@ -74,8 +74,3 @@ static std::string sumOfDivided(std::vector<int> &lst){
         return ret;
 }
 };
-
-/*int main(){
-        std::vector<int> lst = {12, 15};
-        std::cout << SumOfDivided::sumOfDivided(lst);
-}*/
