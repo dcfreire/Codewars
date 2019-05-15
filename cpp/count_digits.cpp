@@ -21,3 +21,8 @@ public:
       return dcount;
     }
 };
+
+int main(){
+  CountDig a;
+  CountDig::nbDig(1231, 1341);
+}
