@@ -4,8 +4,8 @@ def expanded_form(num):
     last = num % 10
     num = int(num / 10)
     while num:
-        if (num % 10)*int(10)**int(pow):
-            li.insert(0, (num % 10)*int(10)**int(pow))
+        if (num % 10) * int(10)**int(pow):
+            li.insert(0, (num % 10) * int(10)**int(pow))
         pow += 1
         num = int(num / 10)
     if not last:
