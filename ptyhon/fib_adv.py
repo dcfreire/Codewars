@@ -1,5 +1,4 @@
 
-
 cache = {}
 def fib(n):
     if n in cache.keys():
