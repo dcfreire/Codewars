@@ -1,3 +1,6 @@
+
+
+
 def switch(arg):
         switcher = {
             'F': "<span style=\"color: pink\">",
