@@ -65,7 +65,6 @@ def execute(code):
     cur_pos = [1, 1]
     for c in ex_code:
         if c == 'F':
-            print(cur_dir)
             if cur_dir == 0:
                 grid[cur_pos[0]][cur_pos[1]+1] = 1
                 cur_pos[1] += 1
