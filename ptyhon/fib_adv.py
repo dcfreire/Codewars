@@ -16,5 +16,3 @@ def fib(n):
         cache[n] = fib(n/2)*(2*fib(((n)/2)+1) - fib(n/2))
 
     return cache[n]
-
-fib(-5)
