@@ -11,16 +11,27 @@ def is_decimal(code, c):
             break
     return ''.join(num), c
 
+def check_loop():
+    stacktrace = []
+    for i in func:
+        stacktrace.clear()
+        while True:
+            if func[i].find("P") == -1:
+                break;
+            num = is_decimal(func[i], func[i].find("P")+1)
+            stacktrace.append(i)
+            if len(stacktrace) != len(set(stacktrace)):
+                raise Exception('Infinite loop in patterns')
+            i = num[0]
+
+
 def search_funcs(code):
     bl = []
     code_list = list(code)
     while True:
         bl.clear()
         code = ''.join(code_list)
-
         ind = code.find("p")
-
-        print(ind)
         if ind == -1:
             break;
         del code_list[ind]
@@ -30,20 +41,26 @@ def search_funcs(code):
             bl.append(code_list[ind])
             del code_list[ind]
         del code_list[ind]
-        func[num[0]] = ''.join(bl)
+        if num[0] in func:
+            raise Exception('Pattern defined more than once')
+        else:
+            func[num[0]] = ''.join(bl)
+
         if not len(code_list):
             break;
-    return code
+    return ''.join(code_list)
 
 def expand(code):
     char = ''
     code = search_funcs(code)
+    check_loop()
     code = list(code)
     bl = []
     ret = []
     c = 0
     bn = 0
     while c < len(code):
+
         if code[c].isdecimal():
             num = is_decimal(code, c)
             del code[c:num[1]]
@@ -54,14 +71,20 @@ def expand(code):
                 ret.append(char)
             code[c:c] = ''.join(ret)
             ret.clear()
-
-
         else:
             if code[c] == 'P':
+
                 del code[c]
+
                 num = is_decimal(code, c)
                 del code[c:num[1]]
-                code[c:c] = func[num[0]]
+
+                if num[0] in func:
+                    code[c:c] = func[num[0]]
+                    c-=1
+                else:
+                    raise Exception('Invalid function')
+
             if code[c] == '(':
                 bl.clear()
                 bn += 1
@@ -82,7 +105,7 @@ def expand(code):
                         del code[c:num[1]]
                         for i in range(int(''.join(num[0]), 10)):
                             code[c:c] = list(char)
-                        c -= 1
+                c -= 1
             elif code[c] == ')':
                 c+=1
                 continue
@@ -128,6 +151,7 @@ def format_grid(grid):
     return ret
 
 def execute(code):
+    func.clear()
     ex_code = expand(code)
     grid = np.zeros((3, 3))
     grid[1][1] = '1'
@@ -170,6 +194,3 @@ def execute(code):
         ret.append(''.join(grid[i]))
         first = False
     return ''.join(ret)
-
-expand("p13A1B2C3q2A7B1P13")
-func
