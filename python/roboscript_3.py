@@ -3,13 +3,14 @@ func = {}
 
 
 def is_decimal(code, c):
-    num =[]
+    num = []
     while code[c].isdecimal():
         num.append(code[c])
         c += 1
-        if(c == len(code)):
+        if (c == len(code)):
             break
     return ''.join(num), c
+
 
 def check_loop():
     stacktrace = []
@@ -17,8 +18,8 @@ def check_loop():
         stacktrace.clear()
         while True:
             if func[i].find("P") == -1:
-                break;
-            num = is_decimal(func[i], func[i].find("P")+1)
+                break
+            num = is_decimal(func[i], func[i].find("P") + 1)
             stacktrace.append(i)
             if len(stacktrace) != len(set(stacktrace)):
                 raise Exception('Infinite loop in patterns')
@@ -33,7 +34,7 @@ def search_funcs(code):
         code = ''.join(code_list)
         ind = code.find("p")
         if ind == -1:
-            break;
+            break
         del code_list[ind]
         num = is_decimal(code_list, ind)
         del code_list[ind:num[1]]
@@ -47,8 +48,9 @@ def search_funcs(code):
             func[num[0]] = ''.join(bl)
 
         if not len(code_list):
-            break;
+            break
     return ''.join(code_list)
+
 
 def expand(code):
     char = ''
@@ -65,9 +67,9 @@ def expand(code):
             num = is_decimal(code, c)
             del code[c:num[1]]
             if int(num[0], 10) == 0:
-                del code[c-1]
-                c -=1
-            for i in range(int(''.join(num[0]), 10)-1):
+                del code[c - 1]
+                c -= 1
+            for _ in range(int(''.join(num[0]), 10) - 1):
                 ret.append(char)
             code[c:c] = ''.join(ret)
             ret.clear()
@@ -81,7 +83,7 @@ def expand(code):
 
                 if num[0] in func:
                     code[c:c] = func[num[0]]
-                    c-=1
+                    c -= 1
                 else:
                     raise Exception('Invalid function')
 
@@ -95,29 +97,30 @@ def expand(code):
                     if code[b] == ')':
                         bn -= 1
                     if not bn:
-                        break;
+                        break
                     bl.append(code[b])
                     b += 1
                 char = ''.join(bl)
-                if b+1 < len(code):
-                    if code[b+1].isdecimal():
-                        num = is_decimal(code, b+1)
+                if b + 1 < len(code):
+                    if code[b + 1].isdecimal():
+                        num = is_decimal(code, b + 1)
                         del code[c:num[1]]
-                        for i in range(int(''.join(num[0]), 10)):
+                        for _ in range(int(''.join(num[0]), 10)):
                             code[c:c] = list(char)
                 c -= 1
             elif code[c] == ')':
-                c+=1
+                c += 1
                 continue
             else:
                 char = code[c]
 
-
             c += 1
     return ''.join(code)
+
+
 def ex_grid(grid):
-    ret = np.zeros((len(grid)+2, len(grid[0])+2))
-    ret[1:grid.shape[0]+1, 1:grid.shape[1]+1] = grid
+    ret = np.zeros((len(grid) + 2, len(grid[0]) + 2))
+    ret[1:grid.shape[0] + 1, 1:grid.shape[1] + 1] = grid
     return ret
 
 
@@ -142,6 +145,7 @@ def remove_dead(mat):
             del arr[len(arr) - 1]
     return mat
 
+
 def format_grid(grid):
     ret = np.full(grid.shape, ' ')
     for i in range(grid.shape[0]):
@@ -149,6 +153,7 @@ def format_grid(grid):
             if grid[i][j]:
                 ret[i][j] = '*'
     return ret
+
 
 def execute(code):
     func.clear()
@@ -160,16 +165,16 @@ def execute(code):
     for c in ex_code:
         if c == 'F':
             if cur_dir == 0:
-                grid[cur_pos[0]][cur_pos[1]+1] = 1
+                grid[cur_pos[0]][cur_pos[1] + 1] = 1
                 cur_pos[1] += 1
             if cur_dir == 1:
-                grid[cur_pos[0]-1][cur_pos[1]] = 1
+                grid[cur_pos[0] - 1][cur_pos[1]] = 1
                 cur_pos[0] -= 1
             if cur_dir == 2:
-                grid[cur_pos[0]][cur_pos[1]-1] = 1
+                grid[cur_pos[0]][cur_pos[1] - 1] = 1
                 cur_pos[1] -= 1
             if cur_dir == 3:
-                grid[cur_pos[0]+1][cur_pos[1]] = 1
+                grid[cur_pos[0] + 1][cur_pos[1]] = 1
                 cur_pos[0] += 1
 
         if c == 'R':
@@ -180,7 +185,7 @@ def execute(code):
             cur_dir += 1
             if cur_dir > 3:
                 cur_dir = 0
-        if cur_pos[0] == grid.shape[0]-1 or cur_pos[1] == grid.shape[1]-1 or 0 in cur_pos:
+        if cur_pos[0] == grid.shape[0] - 1 or cur_pos[1] == grid.shape[1] - 1 or 0 in cur_pos:
             grid = ex_grid(grid)
             cur_pos[0] += 1
             cur_pos[1] += 1
