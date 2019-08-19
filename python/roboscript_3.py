@@ -1,4 +1,5 @@
 import numpy as np
+func = {}
 
 
 def is_decimal(code, c):
@@ -10,8 +11,33 @@ def is_decimal(code, c):
             break
     return ''.join(num), c
 
+def search_funcs(code):
+    bl = []
+    code_list = list(code)
+    while True:
+        bl.clear()
+        code = ''.join(code_list)
+
+        ind = code.find("p")
+
+        print(ind)
+        if ind == -1:
+            break;
+        del code_list[ind]
+        num = is_decimal(code_list, ind)
+        del code_list[ind:num[1]]
+        while code_list[ind] != 'q':
+            bl.append(code_list[ind])
+            del code_list[ind]
+        del code_list[ind]
+        func[num[0]] = ''.join(bl)
+        if not len(code_list):
+            break;
+    return code
+
 def expand(code):
     char = ''
+    code = search_funcs(code)
     code = list(code)
     bl = []
     ret = []
@@ -31,6 +57,11 @@ def expand(code):
 
 
         else:
+            if code[c] == 'P':
+                del code[c]
+                num = is_decimal(code, c)
+                del code[c:num[1]]
+                code[c:c] = func[num[0]]
             if code[c] == '(':
                 bl.clear()
                 bn += 1
@@ -140,4 +171,5 @@ def execute(code):
         first = False
     return ''.join(ret)
 
-expand("F0L0F0((F3R0LF3R0R0R)0FL0L0RF6F0L)2F0F0F0F0F0")
+expand("p13A1B2C3q2A7B1P13")
+func
