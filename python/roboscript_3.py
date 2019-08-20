@@ -62,7 +62,6 @@ def expand(code):
     c = 0
     bn = 0
     while c < len(code):
-
         if code[c].isdecimal():
             num = is_decimal(code, c)
             del code[c:num[1]]
