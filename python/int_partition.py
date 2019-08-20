@@ -1,27 +1,28 @@
 mem = {}
 
+
 def exp_sum(n):
-  sum    = 0;
-  aux    = 1;
-  k = 1;
+    sum = 0
+    aux = 1
+    k = 1
 
-  if n == 0:
-      return 1;
+    if n == 0:
+        return 1
 
-  if n < 0:
-      return 0;
+    if n < 0:
+        return 0
 
-  if mem.get(n) != None:
-      return mem[n];
+    if mem.get(n) != None:
+        return mem[n]
 
-  while aux:
-    aux  = exp_sum(n - (k * (3 * k - 1) / 2));
-    sum += (-1)**(k + 1) * aux;
+    while aux:
+        aux = exp_sum(n - (k * (3 * k - 1) / 2))
+        sum += (-1)**(k + 1) * aux
 
-    if (k > 0):
-        k = k * (-1);
-    else:
-        k = (k * (-1)) + 1;
+        if (k > 0):
+            k = k * (-1)
+        else:
+            k = (k * (-1)) + 1
 
-  mem[n] = sum;
-  return sum;
+    mem[n] = sum
+    return sum

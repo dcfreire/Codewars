@@ -1,5 +1,7 @@
 
 cache = {}
+
+
 def fib(n):
     if n in cache.keys():
         return cache[n]
@@ -11,8 +13,8 @@ def fib(n):
     if n == 0:
         return 0
     if n % 2:
-        cache[n] = fib(((n-1)/2)+1)**2 + fib((n-1)/2)**2
+        cache[n] = fib(((n - 1) / 2) + 1)**2 + fib((n - 1) / 2)**2
     else:
-        cache[n] = fib(n/2)*(2*fib(((n)/2)+1) - fib(n/2))
+        cache[n] = fib(n / 2) * (2 * fib(((n) / 2) + 1) - fib(n / 2))
 
     return cache[n]

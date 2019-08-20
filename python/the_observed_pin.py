@@ -22,7 +22,7 @@ def get_pins(observed):
             c.extend(['8', '6'])
         if c[0] == '0':
             c.extend(['8'])
-    perm = [len(str[i])-1 for i in range(len(str))]
+    perm = [len(str[i]) - 1 for i in range(len(str))]
     print(perm)
     ret = []
     comb = []
@@ -33,7 +33,7 @@ def get_pins(observed):
         ret.append(''.join(comb))
         comb.clear()
         set = True
-        for i in range(len(perm)-1, -1, -1):
+        for i in range(len(perm) - 1, -1, -1):
             if set:
                 perm[i] -= 1
                 if perm[i] < 0:

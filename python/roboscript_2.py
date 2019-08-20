@@ -7,14 +7,14 @@ def expand(code):
     ret = []
     c = 0
     while c < len(code):
-        if code[c].isdecimal() :
+        if code[c].isdecimal():
             while code[c].isdecimal():
                 num.append(code[c])
                 c += 1
                 if(c == len(code)):
                     break
 
-            for i in range(int(''.join(num), 10)-1):
+            for i in range(int(''.join(num), 10) - 1):
                 ret.append(char)
             num.clear()
         else:
@@ -22,9 +22,11 @@ def expand(code):
             char = code[c]
             c += 1
     return ''.join(ret)
+
+
 def ex_grid(grid):
-    ret = np.zeros((len(grid)+2, len(grid[0])+2))
-    ret[1:grid.shape[0]+1, 1:grid.shape[1]+1] = grid
+    ret = np.zeros((len(grid) + 2, len(grid[0]) + 2))
+    ret[1:grid.shape[0] + 1, 1:grid.shape[1] + 1] = grid
     return ret
 
 
@@ -49,6 +51,7 @@ def remove_dead(mat):
             del arr[len(arr) - 1]
     return mat
 
+
 def format_grid(grid):
     ret = np.full(grid.shape, ' ')
     for i in range(grid.shape[0]):
@@ -56,6 +59,7 @@ def format_grid(grid):
             if grid[i][j]:
                 ret[i][j] = '*'
     return ret
+
 
 def execute(code):
     ex_code = expand(code)
@@ -66,16 +70,16 @@ def execute(code):
     for c in ex_code:
         if c == 'F':
             if cur_dir == 0:
-                grid[cur_pos[0]][cur_pos[1]+1] = 1
+                grid[cur_pos[0]][cur_pos[1] + 1] = 1
                 cur_pos[1] += 1
             if cur_dir == 1:
-                grid[cur_pos[0]-1][cur_pos[1]] = 1
+                grid[cur_pos[0] - 1][cur_pos[1]] = 1
                 cur_pos[0] -= 1
             if cur_dir == 2:
-                grid[cur_pos[0]][cur_pos[1]-1] = 1
+                grid[cur_pos[0]][cur_pos[1] - 1] = 1
                 cur_pos[1] -= 1
             if cur_dir == 3:
-                grid[cur_pos[0]+1][cur_pos[1]] = 1
+                grid[cur_pos[0] + 1][cur_pos[1]] = 1
                 cur_pos[0] += 1
 
         if c == 'R':
@@ -86,7 +90,7 @@ def execute(code):
             cur_dir += 1
             if cur_dir > 3:
                 cur_dir = 0
-        if cur_pos[0] == grid.shape[0]-1 or cur_pos[1] == grid.shape[1]-1 or 0 in cur_pos:
+        if cur_pos[0] == grid.shape[0] - 1 or cur_pos[1] == grid.shape[1] - 1 or 0 in cur_pos:
             grid = ex_grid(grid)
             cur_pos[0] += 1
             cur_pos[1] += 1
