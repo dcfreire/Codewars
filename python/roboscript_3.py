@@ -26,6 +26,43 @@ def check_loop():
             i = num[0]
 
 
+def do_p(code, c):
+    del code[c]
+
+    num = is_decimal(code, c)
+    del code[c:num[1]]
+
+    if num[0] in func:
+        code[c:c] = func[num[0]]
+        c -= 1
+    else:
+        raise Exception('Invalid function')
+    return code, c
+
+
+def do_parenthesis(code, c):
+    bl = []
+    bn = 1
+    b = c + 1
+    while bn:
+        if code[b] == '(':
+            bn += 1
+        if code[b] == ')':
+            bn -= 1
+        if not bn:
+            break
+        bl.append(code[b])
+        b += 1
+    char = ''.join(bl)
+    if b + 1 < len(code):
+        if code[b + 1].isdecimal():
+            num = is_decimal(code, b + 1)
+            del code[c:num[1]]
+            for _ in range(int(''.join(num[0]), 10)):
+                code[c:c] = list(char)
+    return code
+
+
 def search_funcs(code):
     bl = []
     code_list = list(code)
@@ -57,10 +94,8 @@ def expand(code):
     code = search_funcs(code)
     check_loop()
     code = list(code)
-    bl = []
     ret = []
     c = 0
-    bn = 0
     while c < len(code):
         if code[c].isdecimal():
             num = is_decimal(code, c)
@@ -74,45 +109,17 @@ def expand(code):
             ret.clear()
         else:
             if code[c] == 'P':
-
-                del code[c]
-
-                num = is_decimal(code, c)
-                del code[c:num[1]]
-
-                if num[0] in func:
-                    code[c:c] = func[num[0]]
-                    c -= 1
-                else:
-                    raise Exception('Invalid function')
-
+                aux = do_p(code, c)
+                code = aux[0]
+                c = aux[1]
             if code[c] == '(':
-                bl.clear()
-                bn += 1
-                b = c + 1
-                while bn:
-                    if code[b] == '(':
-                        bn += 1
-                    if code[b] == ')':
-                        bn -= 1
-                    if not bn:
-                        break
-                    bl.append(code[b])
-                    b += 1
-                char = ''.join(bl)
-                if b + 1 < len(code):
-                    if code[b + 1].isdecimal():
-                        num = is_decimal(code, b + 1)
-                        del code[c:num[1]]
-                        for _ in range(int(''.join(num[0]), 10)):
-                            code[c:c] = list(char)
+                code = do_parenthesis(code, c)
                 c -= 1
             elif code[c] == ')':
                 c += 1
                 continue
             else:
                 char = code[c]
-
             c += 1
     return ''.join(code)
 
