@@ -4,3 +4,5 @@ defmodule Challenge do
    |> Enum.sum()
   end
 end
+
+solution(10)
