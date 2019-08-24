@@ -3,25 +3,22 @@ defmodule Twice do
     def dbl_linear(n) do
      y = fn x -> 2*x+1 end
      z = fn x -> 3*x+1 end
-     n_op = trunc(:math.log2(n))
-     Enum.map(1..n_op + 2, fn k ->
-      Enum.map(0..trunc(:math.pow(2, k) - 1),fn x ->
-      dig = Integer.digits(x, 2)
-      Enum.concat(List.duplicate(0, k - Enum.count(dig)), dig)
-      |>Enum.reduce(1, fn l, acc ->
+     Enum.reduce(1..n, {[1], 0, 0}, fn _, acc ->
+       yaux = y.(Enum.at(elem(acc, 0), elem(acc, 1)))
+       zaux = z.(Enum.at(elem(acc, 0), elem(acc, 2)))
        cond do
-        l == 1 ->
-         z.(acc)
+        yaux <= zaux ->
+         acc = {elem(acc, 0) ++ [yaux], elem(acc, 1) + 1, elem(acc, 2)}
+         if yaux == zaux do
+         {elem(acc, 0), elem(acc, 1), elem(acc, 2) + 1}
+        else
+         acc
+        end
         true ->
-         y.(acc)
+         {elem(acc, 0) ++ [zaux], elem(acc, 1), elem(acc, 2) + 1}
        end
-      end)
-      end
-      )end)
-      |> Enum.concat()
-      |> Enum.uniq()
-      |> Enum.sort()
-      |> List.insert_at(0, 1)
-      |> Enum.at(n)
+     end)
+     |> elem(0)
+     |> List.last()
      end
 end
