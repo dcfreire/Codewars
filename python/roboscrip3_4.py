@@ -1,7 +1,18 @@
+# %%
 import numpy as np
+import re
 func = {}
+# %%
+def check_and_parse(code):
+    code = re.sub(r"((\/\/.*\n)|((\/\*)([^])*?(\*\/){1}))", '', code)
+    if re.match(r"[a-zA-Z)]\s\d", code):
+        raise Exception('Invalid indentation/spacing')
+    if re.match(r"[^FRL()Ppq0-9]", code):
+        raise Exception('Operation not defined')
+    return re.sub(r"\s", '', code)
 
 
+# %%
 def is_decimal(code, c):
     num = []
     while code[c].isdecimal():
@@ -11,7 +22,7 @@ def is_decimal(code, c):
             break
     return ''.join(num), c
 
-
+# %%
 def check_loop():
     stacktrace = []
     for i in func:
@@ -24,6 +35,8 @@ def check_loop():
             if len(stacktrace) != len(set(stacktrace)):
                 raise Exception('Infinite loop in patterns')
             i = num[0]
+
+# %%
 
 
 def do_p(code, c):
@@ -38,6 +51,8 @@ def do_p(code, c):
     else:
         raise Exception('Invalid function')
     return code, c
+
+# %%
 
 
 def do_parenthesis(code, c):
@@ -61,6 +76,8 @@ def do_parenthesis(code, c):
             for _ in range(int(''.join(num[0]), 10)):
                 code[c:c] = list(char)
     return code
+
+# %%
 
 
 def search_funcs(code):
@@ -87,6 +104,8 @@ def search_funcs(code):
         if not len(code_list):
             break
     return ''.join(code_list)
+
+# %%
 
 
 def expand(code):
@@ -123,11 +142,15 @@ def expand(code):
             c += 1
     return ''.join(code)
 
+# %%
+
 
 def ex_grid(grid):
     ret = np.zeros((len(grid) + 2, len(grid[0]) + 2))
     ret[1:grid.shape[0] + 1, 1:grid.shape[1] + 1] = grid
     return ret
+
+# %%
 
 
 def remove_dead(mat):
@@ -151,6 +174,8 @@ def remove_dead(mat):
             del arr[len(arr) - 1]
     return mat
 
+# %%
+
 
 def format_grid(grid):
     ret = np.full(grid.shape, ' ')
@@ -159,6 +184,8 @@ def format_grid(grid):
             if grid[i][j]:
                 ret[i][j] = '*'
     return ret
+
+# %%
 
 
 def execute(code):

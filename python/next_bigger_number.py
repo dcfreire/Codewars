@@ -18,3 +18,6 @@ def next_bigger(n):
     if digs == n:
         return -1
     return digs
+
+
+
