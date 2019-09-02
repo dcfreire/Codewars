@@ -159,10 +159,10 @@ class RSUProgram:
                 grid[cur_pos[0]][cur_pos[1]] = 1
 
             if c == 'R':
-                cur_dir += math.pi/2
+                cur_dir -= math.pi
             if c == 'L':
-                cur_dir -= math.pi/2
-        grid = self.format_grid(grid)
+                cur_dir += math.pi
+        self.format_grid(grid)
         ret = []
         first = True
         for i in range(grid.shape[0]):
@@ -171,7 +171,7 @@ class RSUProgram:
             ret.extend(grid[i])
             first = False
         self.functions.clear()
-        return ''.join()
+        return ''.join(ret)
 
     def execute(self):
         ret = self.execute_raw(self.convert_to_raw(self.get_tokens()))
@@ -180,29 +180,7 @@ class RSUProgram:
         return ret
 
 
-RSUProgram("""/*
-  RoboScript Ultimatum (RSU)
-  A simple and comprehensive code example
-*/
-
-// Define a new pattern with identifier n = 0
-p0
-  // The commands below causes the MyRobot to move
-  // in a short snake-like path upwards if executed
-  (
-    F2 L // Go forwards two steps and then turn left
-  )2 (
-    F2 R // Go forwards two steps and then turn right
-  )2
-q
-
-// Execute the snake-like pattern twice to generate
-// a longer snake-like pattern
-(
-  P0
-)2
-(F2L)2(F2R)2
-FFLFFLFFRFFR""").execute()
+RSUProgram("""FFFLFFFRFFF""").execute()
 
 
 # %%

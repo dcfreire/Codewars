@@ -1,7 +1,7 @@
 # %%
 import re
 import numpy as np
-import math
+
 
 class RSUProgram:
     source = ""
@@ -91,7 +91,7 @@ class RSUProgram:
                 if (saux, tokens[0][1:]) not in self.functions.keys():
                     raise Exception('Function not defined ' + tokens[0])
                 self.stacktrace.append((saux, tokens[0][1:]))
-                if len(set(self.stacktrace)) != len(self.stacktrace) and scope != '-1':
+                if len(set(self.stacktrace)) != len(self.stacktrace) and fn != '-1':
                     raise Exception('Infinite loop detected in patterns')
                 self.expand_fun((saux, tokens[0][1:]))
                 tokens[0:1] = self.functions[(saux, tokens[0][1:])]
@@ -124,7 +124,7 @@ class RSUProgram:
 
     def expand_fun(self, key):
         self.functions[key] = re.sub(r"p\d+.+q{1}", '', ''.join(self.functions[key]))
-        a = RSUProgram(str(self.functions[key]))
+        a = RSUProgram(str(''.join(self.functions[key])))
         self.functions[key] = self.convert_to_raw(
             a.get_tokens(), key[0], key[1])
 
@@ -136,32 +136,65 @@ class RSUProgram:
                     ret[i][j] = '*'
         return ret
 
+    def remove_dead(self, mat):
+        arr = np.sum(mat, axis=1).tolist()
+        begin = 0
+        while arr[begin] == 0 or arr[len(arr) - 1] == 0:
+            if arr[begin] == 0:
+                del arr[begin]
+                mat = np.delete(mat, begin, 0)
+            if arr[len(arr) - 1] == 0:
+                del arr[len(arr) - 1]
+                mat = np.delete(mat, mat.shape[0] - 1, 0)
+
+        arr = np.sum(mat, axis=0).tolist()
+        while arr[begin] == 0 or arr[len(arr) - 1] == 0:
+            if not arr[begin]:
+                del arr[begin]
+                mat = np.delete(mat, begin, 1)
+            if not arr[len(arr) - 1]:
+                mat = np.delete(mat, mat.shape[1] - 1, 1)
+                del arr[len(arr) - 1]
+        return mat
+
+    def ex_grid(self, grid):
+        ret = np.zeros((len(grid) + 2, len(grid[0]) + 2))
+        ret[1:grid.shape[0] + 1, 1:grid.shape[1] + 1] = grid
+        return ret
 
     def execute_raw(self, cmds):
-        grid = np.zeros((1, 1))
-        grid[0][0] = '1'
+        grid = np.zeros((3, 3))
+        grid[1][1] = '1'
         cur_dir = 0
-        cur_pos = [0, 0]
+        cur_pos = [1, 1]
         for c in cmds:
             if c == 'F':
-                cur_pos[0] += round(math.sin(cur_dir))
-                cur_pos[1] += round(math.cos(cur_dir))
-                if cur_pos[0] < 0:
-                    grid = np.concatenate((np.zeros((1, grid.shape[1])), grid), axis=0)
-                    cur_pos[0] = 0
-                elif cur_pos[1] < 0:
-                    grid = np.concatenate((np.zeros((grid.shape[0], 1)), grid), axis=1)
-                    cur_pos[1] = 0
-                if cur_pos[0] == grid.shape[0]:
-                    grid = np.concatenate((grid, np.zeros((1, grid.shape[1]))), axis=0)
-                elif cur_pos[1] == grid.shape[1]:
-                    grid = np.concatenate((grid, np.zeros((grid.shape[0], 1))), axis=1)
-                grid[cur_pos[0]][cur_pos[1]] = 1
+                if cur_dir == 0:
+                    grid[cur_pos[0]][cur_pos[1] + 1] = 1
+                    cur_pos[1] += 1
+                if cur_dir == 1:
+                    grid[cur_pos[0] - 1][cur_pos[1]] = 1
+                    cur_pos[0] -= 1
+                if cur_dir == 2:
+                    grid[cur_pos[0]][cur_pos[1] - 1] = 1
+                    cur_pos[1] -= 1
+                if cur_dir == 3:
+                    grid[cur_pos[0] + 1][cur_pos[1]] = 1
+                    cur_pos[0] += 1
 
             if c == 'R':
-                cur_dir += math.pi/2
+                cur_dir -= 1
+                if cur_dir < 0:
+                    cur_dir = 3
             if c == 'L':
-                cur_dir -= math.pi/2
+                cur_dir += 1
+                if cur_dir > 3:
+                    cur_dir = 0
+            if cur_pos[0] == grid.shape[0] - 1 or cur_pos[1] == grid.shape[1] - 1 or 0 in cur_pos:
+                grid = self.ex_grid(grid)
+                cur_pos[0] += 1
+                cur_pos[1] += 1
+        grid = self.remove_dead(grid)
         grid = self.format_grid(grid)
         ret = []
         first = True
@@ -171,38 +204,36 @@ class RSUProgram:
             ret.extend(grid[i])
             first = False
         self.functions.clear()
-        return ''.join()
+        return ''.join(ret)
 
     def execute(self):
-        ret = self.execute_raw(self.convert_to_raw(self.get_tokens()))
         self.stacktrace.clear()
-        self.functions.clear()
-        return ret
+        return self.execute_raw(self.convert_to_raw(self.get_tokens()))
 
 
-RSUProgram("""/*
-  RoboScript Ultimatum (RSU)
-  A simple and comprehensive code example
-*/
+a = RSUProgram("""
+p1
+  p1
+    F R
+  q
 
-// Define a new pattern with identifier n = 0
-p0
-  // The commands below causes the MyRobot to move
-  // in a short snake-like path upwards if executed
-  (
-    F2 L // Go forwards two steps and then turn left
-  )2 (
-    F2 R // Go forwards two steps and then turn right
-  )2
+  F2 P1 // Refers to "inner" (locally defined) P1 so no infinite recursion results
 q
 
-// Execute the snake-like pattern twice to generate
-// a longer snake-like pattern
 (
-  P0
-)2
-(F2L)2(F2R)2
-FFLFFLFFRFFR""").execute()
+  F2 P1 // Refers to "outer" (global) P1 since the
+  // global scope can"t "see" local P1
+)4
 
-
+/*
+  Equivalent to executing the following raw commands:
+  F F F F F R F F F F F R F F F F F R F F F F F R
+*/
+F2P1
+FR
+FFFR
+FFFR
+FFFR
+""")
+a.convert_to_raw(a.get_tokens())
 # %%

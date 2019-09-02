@@ -159,9 +159,9 @@ class RSUProgram:
                 grid[cur_pos[0]][cur_pos[1]] = 1
 
             if c == 'R':
-                cur_dir += math.pi/2
-            if c == 'L':
                 cur_dir -= math.pi/2
+            if c == 'L':
+                cur_dir += math.pi/2
         grid = self.format_grid(grid)
         ret = []
         first = True
@@ -171,7 +171,7 @@ class RSUProgram:
             ret.extend(grid[i])
             first = False
         self.functions.clear()
-        return ''.join()
+        return ''.join(ret)
 
     def execute(self):
         ret = self.execute_raw(self.convert_to_raw(self.get_tokens()))

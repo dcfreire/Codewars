@@ -141,7 +141,7 @@ class RSUProgram:
         grid = np.zeros((1, 1))
         grid[0][0] = '1'
         cur_dir = 0
-        cur_pos = [0, 0]
+        cur_pos = [1, 1]
         for c in cmds:
             if c == 'F':
                 cur_pos[0] += round(math.sin(cur_dir))
@@ -159,10 +159,10 @@ class RSUProgram:
                 grid[cur_pos[0]][cur_pos[1]] = 1
 
             if c == 'R':
-                cur_dir += math.pi/2
+                cur_dir -= math.pi
             if c == 'L':
-                cur_dir -= math.pi/2
-        grid = self.format_grid(grid)
+                cur_dir += math.pi
+        self.format_grid(grid)
         ret = []
         first = True
         for i in range(grid.shape[0]):
@@ -171,7 +171,7 @@ class RSUProgram:
             ret.extend(grid[i])
             first = False
         self.functions.clear()
-        return ''.join()
+        return ''.join(ret)
 
     def execute(self):
         ret = self.execute_raw(self.convert_to_raw(self.get_tokens()))

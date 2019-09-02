@@ -138,31 +138,36 @@ class RSUProgram:
 
 
     def execute_raw(self, cmds):
-        grid = np.zeros((1, 1))
-        grid[0][0] = '1'
+        grid = np.zeros((3, 3))
+        grid[1][1] = '1'
         cur_dir = 0
-        cur_pos = [0, 0]
+        cur_pos = [1, 1]
         for c in cmds:
             if c == 'F':
-                cur_pos[0] += round(math.sin(cur_dir))
-                cur_pos[1] += round(math.cos(cur_dir))
-                if cur_pos[0] < 0:
-                    grid = np.concatenate((np.zeros((1, grid.shape[1])), grid), axis=0)
-                    cur_pos[0] = 0
-                elif cur_pos[1] < 0:
-                    grid = np.concatenate((np.zeros((grid.shape[0], 1)), grid), axis=1)
-                    cur_pos[1] = 0
-                if cur_pos[0] == grid.shape[0]:
-                    grid = np.concatenate((grid, np.zeros((1, grid.shape[1]))), axis=0)
-                elif cur_pos[1] == grid.shape[1]:
-                    grid = np.concatenate((grid, np.zeros((grid.shape[0], 1))), axis=1)
-                grid[cur_pos[0]][cur_pos[1]] = 1
+                if cur_dir == 0:
+                    grid[cur_pos[0]][cur_pos[1] + 1] = 1
+                    cur_pos[1] += 1
+                if cur_dir == 1:
+                    grid[cur_pos[0] - 1][cur_pos[1]] = 1
+                    cur_pos[0] -= 1
+                if cur_dir == 2:
+                    grid[cur_pos[0]][cur_pos[1] - 1] = 1
+                    cur_pos[1] -= 1
+                if cur_dir == 3:
+                    grid[cur_pos[0] + 1][cur_pos[1]] = 1
+                    cur_pos[0] += 1
 
             if c == 'R':
-                cur_dir += math.pi/2
+                cur_dir += math.pi
+
             if c == 'L':
-                cur_dir -= math.pi/2
-        grid = self.format_grid(grid)
+                cur_dir += 1
+                if cur_dir > 3:
+                    cur_dir = 0
+            if cur_pos[0] == grid.shape[0] - 1 or cur_pos[1] == grid.shape[1] - 1 or 0 in cur_pos:
+                grid = self.ex_grid(grid)
+                cur_pos[0] += 1
+                cur_pos[1] += 1
         ret = []
         first = True
         for i in range(grid.shape[0]):
@@ -171,38 +176,13 @@ class RSUProgram:
             ret.extend(grid[i])
             first = False
         self.functions.clear()
-        return ''.join()
+        return ''.join(ret)
 
     def execute(self):
         ret = self.execute_raw(self.convert_to_raw(self.get_tokens()))
         self.stacktrace.clear()
         self.functions.clear()
         return ret
-
-
-RSUProgram("""/*
-  RoboScript Ultimatum (RSU)
-  A simple and comprehensive code example
-*/
-
-// Define a new pattern with identifier n = 0
-p0
-  // The commands below causes the MyRobot to move
-  // in a short snake-like path upwards if executed
-  (
-    F2 L // Go forwards two steps and then turn left
-  )2 (
-    F2 R // Go forwards two steps and then turn right
-  )2
-q
-
-// Execute the snake-like pattern twice to generate
-// a longer snake-like pattern
-(
-  P0
-)2
-(F2L)2(F2R)2
-FFLFFLFFRFFR""").execute()
 
 
 # %%
