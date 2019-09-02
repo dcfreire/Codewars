@@ -42,7 +42,7 @@ class RSUProgram:
             elif tokens[c][0] == ')':
                 bracket -= 1
             if not re.search(r"p", ''.join(tokens)):
-                break
+                break;
             if tokens[c][0] == 'p':
                 if bracket:
                     raise Exception('Function nested in brackets')
