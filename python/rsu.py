@@ -76,28 +76,29 @@ class RSUProgram:
     def convert_to_raw(self, tokens, scope='-1', fn='-1'):
         ret = []
         self.get_funs(tokens)
-        while tokens:
-            if re.match(r"[RLF]\d+", tokens[0]):
-                num = int(tokens[0][1:])
-                ret.extend([tokens[0][0] for i in range(num)])
-                del tokens[0]
-            elif re.match(r"[RLF]", tokens[0]):
-                ret.append(tokens[0])
-                del tokens[0]
-            elif re.match(r"P\d+", tokens[0]):
+        c = 0
+        while c < len(tokens):
+            if re.match(r"[RLF]\d+", tokens[c]):
+                num = int(tokens[c][1:])
+                ret.extend([tokens[c][0] for i in range(num)])
+                c += 1
+            elif re.match(r"[RLF]", tokens[c]):
+                ret.append(tokens[c])
+                c += 1
+            elif re.match(r"P\d+", tokens[c]):
                 saux = scope + "|" + fn
-                while saux != "-1" and (saux, tokens[0][1:]) not in self.functions.keys():
+                while saux != "-1" and (saux, tokens[c][1:]) not in self.functions.keys():
                     saux = re.sub(r"\|[^|]*$", "", saux)
-                if (saux, tokens[0][1:]) not in self.functions.keys():
-                    raise Exception('Function not defined ' + tokens[0])
-                self.stacktrace.append((saux, tokens[0][1:]))
+                if (saux, tokens[c][1:]) not in self.functions.keys():
+                    raise Exception('Function not defined ' + tokens[c])
+                self.stacktrace.append((saux, tokens[c][1:]))
                 if len(set(self.stacktrace)) != len(self.stacktrace) and scope != '-1':
                     raise Exception('Infinite loop detected in patterns')
-                self.expand_fun((saux, tokens[0][1:]))
-                tokens[0:1] = self.functions[(saux, tokens[0][1:])]
-            elif tokens[0] == '(':
+                self.expand_fun((saux, tokens[c][1:]))
+                tokens[c:c+1] = self.functions[(saux, tokens[c][1:])]
+            elif tokens[c] == '(':
                 bn = 1
-                bc = 1
+                bc = c + 1
                 inbr = []
                 inbr.append(tokens[0])
                 while bn:
@@ -109,15 +110,15 @@ class RSUProgram:
                         bn -= 1
                     inbr.append(tokens[bc])
                     bc += 1
+                c = bc
                 num = inbr[-1][1:]
-
-                del tokens[0:bc]
+                ap = self.convert_to_raw(inbr[1:-1])
                 if num:
                     for _ in range(int(num)):
-                        tokens[0:0] = inbr[1:-1]
+                        ret.extend(ap)
                 else:
-                    tokens[0:0] = inbr[1:-1]
-            elif tokens[0][0] == ')':
+                    ret.extend(ap)
+            elif tokens[c][0] == ')':
                 raise Exception('Unmatched bracket')
         self.stacktrace.clear()
         return ret
@@ -180,29 +181,9 @@ class RSUProgram:
         return ret
 
 
-RSUProgram("""/*
-  RoboScript Ultimatum (RSU)
-  A simple and comprehensive code example
-*/
-
-// Define a new pattern with identifier n = 0
-p0
-  // The commands below causes the MyRobot to move
-  // in a short snake-like path upwards if executed
-  (
-    F2 L // Go forwards two steps and then turn left
-  )2 (
-    F2 R // Go forwards two steps and then turn right
-  )2
-q
-
-// Execute the snake-like pattern twice to generate
-// a longer snake-like pattern
-(
-  P0
-)2
-(F2L)2(F2R)2
-FFLFFLFFRFFR""").execute()
+RSUProgram("""
+p0FFLFFR((FFFR)2(FFFFFL)3)4qp1FRqp2FP1qp3FP2qp4FP3qP0P1P2P3P4
+FFLFFR((FFFR)2(FFFFFL)3)4""").execute()
 
 
 # %%
