@@ -1,0 +1,13 @@
+{application,codewars,
+             [{applications,[kernel,stdlib,elixir,logger]},
+              {description,"codewars"},
+              {modules,['Elixir.Challenge','Elixir.Codewars',
+                        'Elixir.Divisible13','Elixir.DurationFormatter',
+                        'Elixir.Factorial','Elixir.Fib','Elixir.Kata',
+                        'Elixir.Magnet','Elixir.Mumbling','Elixir.OddRow',
+                        'Elixir.ParenthesesValidator','Elixir.People',
+                        'Elixir.PokerHand','Elixir.PuzzleSolver',
+                        'Elixir.Spin','Elixir.StringMix','Elixir.Twice',
+                        'Elixir.VowelCount']},
+              {registered,[]},
+              {vsn,"0.1.0"}]}.

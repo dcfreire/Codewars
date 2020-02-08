@@ -1,5 +1,5 @@
 defmodule PokerHand do
-  @result %{win: 1, loss: 2, tie: 3}
+  # @result %{win: 1, loss: 2, tie: 3}
   @cards %{
     "T" => "10",
     "J" => "11",
@@ -17,7 +17,7 @@ defmodule PokerHand do
       Enum.chunk(Enum.filter(String.codepoints(player), fn x -> x != " " end), 2)
       |> Enum.map(fn [a, b] -> {Map.get(@cards, a, a), Map.get(@cards, b, b)} end)
 
-    player =
+    _player =
       Enum.map(0..(Enum.count(player) - 1), fn x ->
         {Enum.at(player, x),
          Enum.count(player, fn k -> elem(k, 0) == elem(Enum.at(player, x), 0) end)}
@@ -44,7 +44,7 @@ defmodule PokerHand do
     end)
   end
 
-  def compare(player, opponent) do
+  def compare(player, _opponent) do
     parse_hand(player)
   end
 end

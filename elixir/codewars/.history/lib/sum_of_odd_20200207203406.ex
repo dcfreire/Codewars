@@ -15,7 +15,7 @@ defmodule Sum do
   end
 end
 
-defmodule TestSolution do
+defmodule TestSolutions do
   use ExUnit.Case
 
   test "Basic Tests" do

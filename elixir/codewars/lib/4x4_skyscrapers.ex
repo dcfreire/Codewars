@@ -1,5 +1,4 @@
 defmodule PuzzleSolver do
-  def solve(clues) do
-   
+  def solve(_clues) do
   end
 end
