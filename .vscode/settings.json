@@ -63,5 +63,6 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp"
-    }
+    },
+    "typescript.tsdk": "./node_modules/typescript/lib"
 }
