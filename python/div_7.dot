@@ -1,0 +1,30 @@
+digraph G {
+    rankdir=LR;
+    node [shape = point ]; qi
+    i[shape="circle"]
+    0[shape="doublecircle"]
+    1[shape="circle"]
+    2[shape="circle"]
+    3[shape="circle"]
+    4[shape="circle"]
+    5[shape="circle"]
+    6[shape="circle"]
+    qi -> i
+    i -> 0 [label="0"]
+    i -> 1 [label="1"]
+    0 -> 0 [label="0"]
+    0 -> 1 [label="1"]
+    1 -> 2 [label="0"]
+    1 -> 3 [label="1"]
+    2 -> 4 [label="0"]
+    2 -> 5 [label="1"]
+    3 -> 0 [label="1"]
+    3 -> 6 [label="0"]
+    4 -> 2 [label="1"]
+    4 -> 1 [label="0"]
+    5 -> 3 [label="0"]
+    5 -> 4 [label="1"]
+    6 -> 6 [label="1"]
+    6 -> 5 [label="0"]
+
+}

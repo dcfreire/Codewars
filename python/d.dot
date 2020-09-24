@@ -1,0 +1,32 @@
+digraph G {
+    rankdir=LR;
+    node [shape = point ]; qi
+    qstart[shape="circle"]
+    qend[shape="doublecircle"]
+
+    3[shape="circle"]
+    4[shape="circle"]
+    5[shape="circle"]
+    6[shape="circle"]
+    qi -> qstart
+    qstart -> qend[label="00*"]
+    qstart -> 3 [label="0*11"]
+    qstart -> 4 [label="0*100"]
+    qstart -> 5 [label="0*101"]
+
+    qstart -> 4 [label="0*11(10*11)*10*100"]
+    qstart -> 5 [label="0*11(10*11)*10*101"]
+    qstart -> qend [label="0*11(10*11)*100*"]
+    qstart -> 6 [label="0*11(10*11)*0"]
+
+    4 -> 4 [label="(1∪01)0"]
+    4 -> 5 [label="(1∪01)1"]
+
+    4 -> 3 [label="01"]
+    5 -> 3 [label="0"]
+    5 -> 4 [label="1"]
+    6 -> 3 [label="11"]
+    6 -> 4 [label="(0∪10)0"]
+    6 -> 5 [label="(0∪10)1"]
+
+}
