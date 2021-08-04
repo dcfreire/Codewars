@@ -1,1 +1,6 @@
 node_modules/*
+.elixir_ls
+elixir/.elixir_ls
+elixir/.history
+elixir/.vscode
+pythoon/__pycache__
