@@ -5,3 +5,4 @@ elixir/.history
 elixir/.vscode
 pythoon/__pycache__
 .vscode
+rust/*/*/target
