@@ -245,8 +245,3 @@ impl Interpreter {
         Ok(Some(self.calc(&tokens)?))
     }
 }
-
-
-fn main() {
-    println!("Hello, world!");
-}

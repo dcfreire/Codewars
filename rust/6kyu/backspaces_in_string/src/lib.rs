@@ -18,7 +18,3 @@ fn clean_string(s: &str) -> String {
     }
     ret.chars().rev().collect::<String>()
 }
-
-fn main() {
-    println!("Hello, world!");
-}

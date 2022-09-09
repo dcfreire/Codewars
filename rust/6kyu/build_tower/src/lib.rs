@@ -17,9 +17,3 @@ fn tower_builder(n_floors: usize) -> Vec<String> {
     }
     res
 }
-
-
-fn main() {
-    println!("Hello, world!");
-
-}
