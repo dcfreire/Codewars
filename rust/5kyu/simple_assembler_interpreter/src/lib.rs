@@ -39,7 +39,14 @@ impl From<&str> for Instruction {
     }
 }
 
-#[derive(PartialEq, PartialOrd)]
+impl<T> Index<Ptr> for Vec<T> {
+    type Output = T;
+    fn index(&self, index: Ptr) -> &Self::Output {
+        &self[index.ptr]
+    }
+}
+
+#[derive(PartialEq, PartialOrd, Copy, Clone)]
 struct Ptr {
     ptr: usize
 }
@@ -50,9 +57,21 @@ impl Into<usize> for Ptr {
     }
 }
 
+impl PartialEq<usize> for Ptr {
+    fn eq(&self, other: &usize) -> bool {
+        self.ptr == *other
+    }
+}
+
+impl PartialOrd<usize> for Ptr {
+    fn partial_cmp(&self, other: &usize) -> Option<std::cmp::Ordering> {
+        self.ptr.partial_cmp(&other)
+    }
+}
 
 
-use std::ops::AddAssign;
+
+use std::ops::{AddAssign, Index};
 impl AddAssign<i64> for Ptr {
     fn add_assign(&mut self, rhs: i64) {
         if rhs < 0 {
@@ -81,13 +100,9 @@ impl<'a> Assembler<'a> {
 
     fn mov(&mut self, x: String, y: Param) {
         self.ptr += 1;
-        match y {
-            Register(reg) => {
-                let val = self.registers.get(&reg).unwrap();
-                self.registers.insert(x, *val)
-            }
-            Constant(con) => self.registers.insert(x, con),
-        };
+        let num = self.get_param(y);
+        self.registers.insert(x, num);
+
     }
 
     fn inc(&mut self, x: String) {
@@ -129,8 +144,8 @@ impl<'a> Assembler<'a> {
     }
 
     fn run(&mut self) {
-        while self.ptr.ptr < self.instructions.len() {
-            let instruction = self.instructions[self.ptr.ptr];
+        while self.ptr < self.instructions.len() {
+            let instruction = self.instructions[self.ptr];
             match Instruction::from(instruction) {
                 Instruction::Mov(x, y) => self.mov(x, y),
                 Instruction::Inc(x) => self.inc(x),
