@@ -4,14 +4,32 @@ use std::collections::HashMap;
 struct UrlShortener {
     db: HashMap<String, String>,
     rdb: HashMap<String, String>,
-    a: Box<dyn Iterator<Item = String>>
+    perms: Box<dyn Iterator<Item = String>>
 }
 
+struct Permutations {
+    perms: Box<dyn Iterator<Item = String>>
+}
 
-fn get_permutations(n: i32) -> Box<dyn Iterator<Item = String>> {
-    Box::new((0..n)
-    .map(|_| (97u8..=122u8).map(|x| x as char))
-    .multi_cartesian_product().map(|v| v.iter().join("")))
+impl Iterator for Permutations {
+    type Item = String;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.perms.next()
+    }
+}
+
+impl Permutations {
+    fn get_perm(n: i32) -> impl Iterator<Item = String> {
+        (0..n)
+        .map(|_| (97u8..=122u8).map(|x| x as char))
+        .multi_cartesian_product().map(|v| v.iter().join(""))
+    }
+
+    fn new(n: i32) -> Self {
+        Self {
+            perms: Box::new((1..=n).flat_map(|i| Permutations::get_perm(i)))
+        }
+    }
 }
 
 impl UrlShortener {
@@ -19,16 +37,7 @@ impl UrlShortener {
         Self {
             db: HashMap::new(),
             rdb: HashMap::new(),
-            a: Box::new(get_permutations(4)
-            .chain(
-                get_permutations(3)
-            )
-            .chain(
-                get_permutations(2)
-            )
-            .chain(
-                get_permutations(1)
-            ))
+            perms: Box::new(Permutations::new(4))
         }
     }
 
@@ -36,7 +45,7 @@ impl UrlShortener {
         if let Some(s) = self.rdb.get(long_url) {
             return s.to_string();
         }
-        let short = format!("short.ly/{:}", self.a.next().unwrap());
+        let short = format!("short.ly/{:}", self.perms.next().unwrap());
         self.db.insert(short.clone(), long_url.to_string());
         self.rdb.insert(long_url.to_string(), short.clone());
         short
