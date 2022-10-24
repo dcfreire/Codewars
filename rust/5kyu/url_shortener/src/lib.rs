@@ -4,7 +4,7 @@ use std::collections::HashMap;
 struct UrlShortener {
     db: HashMap<String, String>,
     rdb: HashMap<String, String>,
-    perms: Box<dyn Iterator<Item = String>>
+    perms: Permutations
 }
 
 struct Permutations {
@@ -37,7 +37,7 @@ impl UrlShortener {
         Self {
             db: HashMap::new(),
             rdb: HashMap::new(),
-            perms: Box::new(Permutations::new(4))
+            perms: Permutations::new(4)
         }
     }
 
